@@ -1,0 +1,50 @@
+html, body {
+  font-family: 'Microsoft Yahei';
+  margin: 0;
+  padding: 0;
+}
+
+@keyframes avatar-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.avatar {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+  margin-top: 300px;
+  margin-bottom: 40px;
+  box-shadow: 1px 2px 5px rgba(0,0,0,.2);
+  animation: avatar-rotate 20s linear infinite;
+}
+
+.button {
+  font-size: 14px;
+  text-decoration: none;
+  border: 1px solid #333;
+  border-radius: 13px;
+  display: inline-block;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 18px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+.button:link,
+.button:active,
+.button:hover,
+.button:visited {
+  color: #333;
+}
+.button:hover {
+  padding: 0 24px;
+}
+.button.dark {
+  background-color: #444444;
+  color: #ffffff;
+}
