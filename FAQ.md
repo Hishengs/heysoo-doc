@@ -13,10 +13,10 @@ npm i heysoo --save
 {
   "presets": [
     ["env", {
-    	"targets": {
-    		"node": "6.9.5" // 注意，这里指定为你自己的版本
-    	}
-  	}]
+      "targets": {
+        "node": "6.9.5" // 注意，这里指定为你自己的版本
+      }
+    }]
   ]
 }
 ```
@@ -36,7 +36,7 @@ app.start();
 ### 4. 修改项目入口文件（index.js）
 ```js
 require('babel-core/register')({
-	ignore: /node_modules\/(?!heysoo)/, // 注意，这里是为了让 babel 编译 Heysoo 的代码
+  ignore: /node_modules\/(?!heysoo)/, // 注意，这里是为了让 babel 编译 Heysoo 的代码
 });
 
 require('./boot.js');

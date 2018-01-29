@@ -3,10 +3,10 @@
 
 ```js
 ── service
-	 ├── user.js
-	 ├── account.js
-	 ├── auth.js
-	 ├── data.js
+   ├── user.js
+   ├── account.js
+   ├── auth.js
+   ├── data.js
 
 ```
 
@@ -18,3 +18,21 @@
 通过 `this.ctx.service.user` 可以调用相应的控制器及其方法。
 
 ## 示例
+在控制器中调用 service 服务
+```js
+module.exports = app => {
+  class UserController extends app.Controller {
+
+    constructor (){
+      super();
+    }
+
+    async getUser (userId){
+      const user = await this.ctx.service.user.getUserById(userId);
+      this.ctx.done(user);
+    }
+
+  }
+  return UserController;
+}
+```

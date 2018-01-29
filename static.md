@@ -12,3 +12,6 @@ module.exports = {
   },
 }
 ```
+
+## 使用
+在静态文件目录下放置一张照片 `xxx.png`，打开浏览器 `http://localhost:86/static/xxx.png` 可以直接访问。

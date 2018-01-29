@@ -3,8 +3,8 @@
 
 ```js
 ── controller
-	 ├── user.js
-	 ├── account.js
+   ├── user.js
+   ├── account.js
 ```
 
 ## 调用方式
@@ -14,47 +14,47 @@
 user.js
 ```js
 module.exports = app => {
-	class UserController extends app.Controller {
+  class UserController extends app.Controller {
 
-		constructor (){
-			super();
-		}
+    constructor (){
+      super();
+    }
 
-		async getDetail (){
-			const userId = this.ctx.request.body.userId;
-			const accounts = await this.ctx.controller.account.getAccounts(userId);
-			const info = {
-				basic: await this.getBasicInfo(userId),
-				accounts,
-			};
-			this.done(info);
-		}
+    async getDetail (){
+      const userId = this.ctx.request.body.userId;
+      const accounts = await this.ctx.controller.account.getAccounts(userId);
+      const info = {
+        basic: await this.getBasicInfo(userId),
+        accounts,
+      };
+      this.ctx.done(info);
+    }
 
-		async getBasicInfo (userId){
-			return {
-				name: 'heysoo',
-				email: 'demo@heysoo.com'
-			};
-		}
+    async getBasicInfo (userId){
+      return {
+        name: 'heysoo',
+        email: 'demo@heysoo.com'
+      };
+    }
 
-	}
-	return new UserController();
+  }
+  return UserController;
 }
 ```
 account.js
 ```js
 module.exports = app => {
-	class AccountController extends app.Controller {
+  class AccountController extends app.Controller {
 
-		constructor (){
-			super();
-		}
+    constructor (){
+      super();
+    }
 
-		async getAccounts (userId){
-			return [];
-		}
+    getAccounts (userId){
+      return [];
+    }
 
-	}
-	return new AccountController();
+  }
+  return AccountController;
 }
 ```

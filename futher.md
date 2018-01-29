@@ -13,16 +13,19 @@ ctx.cookies.get(name, [options]);
 ctx.cookies.set(name, value, [options])
 ```
 
-## csrf
+## session
+**状态** <span class="badge badge-primary">working</span>
+
+<!-- ## csrf
 **状态** <span class="badge badge-primary">working</span>
 
 默认不启用，如果要使用，请在配置文件中加入以下配置：
 ```json
 {
-	csrf: {
-		enabled: true,
-		type: 'form' // options: form, header
-	}
+  csrf: {
+    enabled: true,
+    type: 'form' // options: form, header
+  }
 }
 ```
 如果选择 `type: form`，请在你的模板表单中加入：
@@ -37,87 +40,111 @@ Heysoo 框架会在每次 POST 请求中检查该字段，如果不存在或不�
 如果选择 `type: header`，请在你的 HTTP 请求库中加入全局 HEADER 设置：
 ```js
 {
-	'CSRF-Field': value
+  'CSRF-Field': value
 }
-```
+``` -->
 
 ## hook / 钩子
-**状态** <span class="badge badge-primary">working</span>
+**状态** <span class="badge badge-primary">done</span>
+> 你可以利用钩子函数来实现自己自定义的插件。
+
 ### app.beforeStart
+在应用启动之前的钩子
+```js
+app.beforeStart(async (app) => {
+  app.console.warn('this is a hook before app start, needs 3 seconds');
+  await new Promise((r, j) => {
+    setTimeout(() => {
+      app.console.success('done, go next');
+      r();
+    }, 3000);
+  });
+});
+```
+
 ### app.afterStart
+在应用启动之后的钩子
+```js
+app.afterStart(async (app) => {
+  app.console.warn('this is a hook after app start, needs 2 seconds');
+  await new Promise((r, j) => {
+    setTimeout(() => {
+      app.console.success('done, go next');
+      r();
+    }, 2000);
+  });
+});
+```
 
 ## httpClient
-框架本身不内置此功能，你可以通过插件的形式选择自己喜欢的 http 请求库(例如 [axios](https://github.com/mzabriskie/axios))集成到框架中来，用以例如向第三方站点发起认证请求或资源请求。
+框架本身不内置此功能，你可以通过插件的形式选择自己喜欢的 http 请求库（例如 [axios](https://github.com/mzabriskie/axios)）集成到框架中来，用以例如向第三方站点发起认证请求或资源请求。
 ```js
 const http = require('axios');
-app.hook(app => {
-	app.context.http = http;
+app.beforeStart(app => {
+  app.context.http = http;
 });
 // 使用
 this.ctx.http.post(url, postData);
 ```
 
-## i18n
+<!-- ## i18n
 **状态** <span class="badge badge-primary">working</span>
 
 ## jsonp
 **状态** <span class="badge badge-primary">working</span>
 
 ## master/worker
-**状态** <span class="badge badge-primary">working</span>
+**状态** <span class="badge badge-primary">working</span> -->
 
 ## middleware / 中间件
 完全兼容 Koa 的中间件用法，你可以在应用启动之前加载你自己的中间件：
 ```js
-const Heysoo = require('../index.js');
+const Heysoo = require('heysoo');
 
 const app = new Heysoo();
 
 app.use(async (ctx,next) => {
-	console.log('middleware test.');
-	await next();
+  console.log('middleware test.');
+  await next();
 });
 
 app.start();
 ```
-Heysoo 提供了简便的方法来更好的组织你的中间件：
+Heysoo 提供了更简便的方法来更好的组织你的中间件。
 
 首先在配置文件中声明中间件目录：
 ```js
 module.exports = {
-	folder: {
-		middleware: 'mw' // 如果不指定默认是 middleware
-	},
-	// 中间件配置
-	middleware: {
-		use: ['mw1','mw2'], // 指定所有要加载的中间件，加载顺序按排列顺序
-		options: {} // 一些通用的配置，可以通过 app.config.middleware.options 获取
-	}
+  folder: {
+    middleware: 'mw'      // 如果不指定默认是 middleware
+  },
+  // 中间件配置
+  middleware: {
+    enabled: true,        // 显式开启
+    use: ['mw1','mw2'],   // 指定所有要加载的中间件，加载顺序按排列顺序
+    options: {}           // 一些通用的配置，可以通过 app.config.middleware.options 获取
+  }
 }
 ```
 你的中间件目录：
 ```js
-	mw
-	 ├── mw1.js
-	 ├── mw2.js
+  mw
+   ├── mw1.js
+   ├── mw2.js
 ```
 mw1.js
 ```js
-module.exports = app => {
-	app.use(async (ctx,next) => {
-		console.log('This is mw1');
-		await next();
-	});
-}
+module.exports = async (ctx,next) => {
+  console.log('This is mw1');
+  await next();
+};
 ```
 mw2.js
 ```js
-module.exports = app => {
-	app.use(async (ctx,next) => {
-		console.log('This is mw2');
-		await next();
-	});
-}
+module.exports = async (ctx,next) => {
+  console.log('This is mw2');
+  await next();
+};
 ```
 框架会检测是否存在中间件目录，然后按指定中间件及顺序执行所有的中间件。
 
@@ -127,8 +154,8 @@ module.exports = app => {
 框架本身不内置此功能，你可以通过插件的形式将这一功能集成到框架中来，以 [mockjs](https://github.com/nuysoft/Mock) 为例：
 ```js
 const Mock = require('mockjs');
-app.hook(app => {
-	app.context.Mock = Mock;
+app.beforeStart(app => {
+  app.context.Mock = Mock;
 });
 // 产生一个 1-100 的随机数
 const randomInt = this.ctx.Mock.mock('@integer(0, 100);
@@ -137,8 +164,5 @@ const randomInt = this.ctx.Mock.mock('@integer(0, 100);
 ## redis
 **状态** <span class="badge badge-primary">working</span>
 
-## session
-**状态** <span class="badge badge-primary">working</span>
-
-## validator
-**状态** <span class="badge badge-primary">working</span>
+<!-- ## validator
+**状态** <span class="badge badge-primary">working</span> -->

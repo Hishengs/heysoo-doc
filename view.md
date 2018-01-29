@@ -16,10 +16,10 @@ npm i --save nunjucks
 在 `config.js` 中：
 ```js
 module.exports = {
-	view: {
-		enabled: true,
-		engine: 'nunjucks',
-	},
+  view: {
+    enabled: true,
+    engine: 'nunjucks',
+  },
 }
 ```
 
@@ -27,17 +27,22 @@ module.exports = {
 在 `controller` 方法中，可以以 `this.ctx.render` 的方式渲染对应的页面。
 ```js
 module.exports = app => {
-	class HomeController extends app.Controller {
+  class HomeController extends app.Controller {
 
-		async index (){
-			await this.ctx.render('index.html');
-		}
+    constructor (){
+      super();
+    }
 
-	}
+    async index (){
+      await this.ctx.render('index.html');
+    }
 
-	return HomeController;
+  }
+
+  return HomeController;
 }
 ```
+> 注意，render 是一个异步操作函数，所以记得加上 await。
 
 ## 手动配置
 有些模板引擎有自己的设置，此时你可以选择手动配置的方式引入配置好的引擎实例(参见 [这里](https://github.com/tj/consolidate.js#template-engine-instances))
@@ -45,11 +50,11 @@ module.exports = app => {
 首先在配置文件中声明启用手动配置：
 ```js
 module.exports = {
-	view: {
-		enabled: true,
-		engine: 'nunjucks',
-		manual: true
-	},
+  view: {
+    enabled: true,
+    engine: 'nunjucks',
+    manual: true
+  },
 }
 ```
 然后，在 app 启动之前
@@ -58,20 +63,20 @@ const Heysoo = require('heysoo');
 
 const app = new Heysoo();
 
-app.hook(app => {
-	const nunjucks = require('nunjucks');
-	app.view.setEngine(nunjucks.configure({
-		autoescape: true,
-		noCache: true
-	}));
+app.beforeStart(app => {
+  const nunjucks = require('nunjucks');
+  app.view.setEngine(nunjucks.configure({
+    autoescape: true,
+    noCache: true
+  }));
 });
-	
+  
 app.start();
 ```
 
 ## 模板变量
 框架默认会向模板传入 `ctx` 实例变量。
-你可以传入自己的变量到模板中：
+你也可以传入自己的变量到模板中：
 ```js
 await this.ctx.render('index.html', { user: 'Jack' });
 ```
@@ -80,7 +85,7 @@ await this.ctx.render('index.html', { user: 'Jack' });
 ## API
 
 ### response.render
-**简介** 页面输出
+**简介** 渲染页面
 
 **别名** `context.render, context.display, response.display`
 

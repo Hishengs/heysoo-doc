@@ -15,6 +15,7 @@
 const app = new Heysoo();
 ```
 
+---
 ### 属性
 
 #### app.version
@@ -26,34 +27,54 @@ const app = new Heysoo();
 #### app.config
 当前配置
 
+#### app.basePath
+应用基础路径
+
+---
 ### 方法
 
 #### app.start
 **简介** 启动 Heysoo 应用
 
-**定义** `app.start(config)`
+**定义** `app.start(callback)`
 
 **参数** 
 
-`config | Object | {} | 应用配置`
+`callback | Function | null | 应用启动后的回调函数`
 
-**注意** 如果传入了 config 参数，将会覆盖掉 `config.js` 原有的参数设置。
-<br><br>
+<br/>
 #### app.beforeStart
-**简介** 应用启动前的钩子。
+**简介** 应用启动前的钩子
 
+**定义** `app.beforeStart(hook)`
+
+**参数** 
+
+`hook | Function | null | 应用之前的钩子函数`
+
+**提示** 可以多次调用此方法来注册多个钩子函数
+
+<br/>
 #### app.afterStart
-**简介** 应用启动后的钩子。
+**简介** 应用启动后的钩子
 
+**定义** `app.afterStart(hook)`
+
+**参数** 
+
+`hook | Function | null | 应用之后的钩子函数`
+
+**提示** 可以多次调用此方法来注册多个钩子函数
+
+<br/>
 #### app.getConfig
 **简介** 获取当前配置
 
 
 
-
 ## context
-
-### context.debug
+单次请求时的上下文对象。
+<!-- ### context.debug -->
 
 ### 别名 API
 #### response 相关别名 API
@@ -79,7 +100,7 @@ context.withHeader, context.withHeaders
 #### request.input
 **简介** 获取表单参数
 
-**定义** `request.input(name,defaultValue)`
+**定义** `request.input(name, defaultValue)`
 
 **参数** 
 
@@ -91,14 +112,14 @@ context.withHeader, context.withHeaders
 
 
 ## response
-> 响应相关 API，支持链式调用。
+> 响应相关 API
 
 ### response.done
 **简介** 结束请求并输出数据
 
 **别名** `context.done`
 
-**定义** `response.done(data,errorLevel,msg)`
+**定义** `response.done(data, errorLevel, msg)`
 
 **参数** 
 
@@ -117,16 +138,17 @@ this.ctx.done(data);
 **输出**
 ```js
 {
-	err: {
-		level: 0, // 错误级别
-		msg: '' // 说明信息
-	},
-	data: 'hello'
+  err: {
+    level: 0,   // 错误级别
+    msg: ''     // 说明信息
+  },
+  data: 'hello'
 }
 ```
-<br><br>
+
+<br>
 ### response.doneWithError
-**简介** 结束请求并输出错误信息，等同于 `this.ctx.done(null,3,errMsg)`
+**简介** 结束请求并输出错误信息，等同于 `this.ctx.done(null, 3, errMsg)`
 
 **别名** `context.doneWithError`
 
@@ -144,14 +166,15 @@ this.ctx.doneWithError(err.toString());
 **输出**
 ```js
 {
-	err: {
-		level: 3,
-		msg: 'error info'
-	},
-	data: null
+  err: {
+    level: 3,
+    msg: 'error info'
+  },
+  data: null
 }
 ```
-<br><br>
+
+<br>
 ### response.download
 **简介** 下载文件
 
@@ -165,13 +188,14 @@ this.ctx.doneWithError(err.toString());
 **别名** `context.json`
 
 **定义** `response.json(json)`
-<br><br>
+
+<br>
 ### response.render
-**简介** 页面输出
+**简介** 渲染页面
 
 **别名** `context.render, context.display, response.display`
 
-**定义** `response.render(viewPath,params)`
+**定义** `response.render(viewPath, params)`
 
 **参数** 
 
@@ -180,16 +204,18 @@ this.ctx.doneWithError(err.toString());
 `params | Object | {} | 模板参数`
 
 **注意** 这是一个异步操作，使用时记得加上 await `await this.ctx.render('index.html')`
-<br><br>
+
+<br>
 ### response.send
 **简介** 简单的数据输出，`this.ctx.body = data` 的简单封装
 
 **别名** `context.send`
 
 **定义** `response.send(data)`
-<br><br>
+
+<br>
 ### response.with
-**简介** <span class="badge badge-primary">chain</span> 响应设置
+**简介** 响应设置
 
 **别名** `context.with`
 
@@ -203,25 +229,31 @@ this.ctx.doneWithError(err.toString());
 `status` HTTP 状态码<br/>
 `header || headers` HTTP 头部
 
+**返回** 应用实例，支持链式调用
+
 **示例** 
 ```js
 this.ctx.with({
-	status: 200,
-	header: {
-		'Content-Type': 'application/json'
-	}
+  status: 200,
+  header: {
+    'Content-Type': 'application/json'
+  }
 }).send();
 ```
-<br><br>
+
+<br>
 ### response.withStatus
-**简介** <span class="badge badge-primary">chain</span> 设置 HTTP 状态码，等同于 `this.ctx.status = statusCode`
+**简介** 设置 HTTP 状态码，等同于 `this.ctx.status = statusCode`
 
 **别名** `context.withStatus`
 
 **定义** `response.withStatus(statusCode)`
-<br><br>
+
+**返回** 应用实例，支持链式调用
+
+<br>
 ### response.withHeader
-**简介** <span class="badge badge-primary">chain</span> 设置HTTP 头部
+**简介** 设置 HTTP 头部
 
 **别名** `response.withHeaders, context.withHeader, context.withHeaders`
 
@@ -231,19 +263,21 @@ this.ctx.with({
 
 `header | Object | {} | HTTP 头部`
 
+**返回** 应用实例，支持链式调用
+
 **示例** 
 ```js
 this.ctx.withHeader({
-	'Content-Type': 'application/json'
+  'Content-Type': 'application/json'
 }).send();
 ```
 
 
 ## router
-> 路由相关 API
+> 路由相关 API（整理中）
 
-## logger
-> 日志相关 API
+<!-- ## logger
+> 日志相关 API -->
 
 <!-- ## util
 > 辅助工具 API

@@ -2,10 +2,11 @@
 - [控制器](/controller.md)
 - [逻辑层](/service.md)
 - [视图层](/view.md)
+- [路由](/router.md)
 - [数据库](/database.md)
 - [静态文件](/static.md)
-- [定时任务](/schedule.md)
-- [日志](/logger.md)
+<!-- - [定时任务](/schedule.md) -->
+<!-- - [日志](/logger.md) -->
 - [API](/api.md)
 - [深入](/futher.md)
 - [FAQ](/FAQ.md)
