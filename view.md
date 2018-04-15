@@ -3,28 +3,27 @@
 </p>
 
 ## 说明
-> 模板使用 [`consolidate`](https://github.com/tj/consolidate.js) 实现，支持多种模板引擎，详见：https://github.com/tj/consolidate.js
+> 模板使用 [`koa-views`](https://github.com/queckezz/koa-views) 实现，支持多种模板引擎，详见：https://github.com/queckezz/koa-views
 
-
-以下以 `nunjucks` 为例介绍具体的使用方法。
+框架本身默认使用 `nunjucks` 作为模板引擎。
 
 ## 配置
-首先安装 `nunjucks`：
+首先安装 `koa-views` 和 `nunjucks`：
 ```js
-npm i --save nunjucks
+npm i --save koa-views nunjucks
 ```
 在 `config.js` 中：
 ```js
 module.exports = {
   view: {
     enabled: true,
-    engine: 'nunjucks',
   },
 }
 ```
+即可启用。
 
 ## 使用
-在 `controller` 方法中，可以以 `this.ctx.render` 的方式渲染对应的页面。
+在 `controller` 方法中，可以使用 `this.ctx.render` 或者 `this.ctx.display` 方法渲染对应的页面。
 ```js
 module.exports = app => {
   class HomeController extends app.Controller {
@@ -34,7 +33,7 @@ module.exports = app => {
     }
 
     async index (){
-      await this.ctx.render('index.html');
+      await this.ctx.render('index.html', { name: 'Heysoo' });
     }
 
   }
@@ -44,35 +43,35 @@ module.exports = app => {
 ```
 > 注意，render 是一个异步操作函数，所以记得加上 await。
 
-## 手动配置
-有些模板引擎有自己的设置，此时你可以选择手动配置的方式引入配置好的引擎实例(参见 [这里](https://github.com/tj/consolidate.js#template-engine-instances))
+`index.html`
+```js
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+    <h1>{{ name }}</h1>
+  </body>
+</html>
+```
 
-首先在配置文件中声明启用手动配置：
+## 修改配置
+如果你不想使用默认的 `nunjucks` 模板引擎，或者想设置更详细的配置，可以通过在配置文件中配置 `root` 和 `opts` 参数：
+
 ```js
 module.exports = {
   view: {
     enabled: true,
-    engine: 'nunjucks',
-    manual: true
+    root: '', // view 文件夹目录
+    opts: {}, // 其他详细配置，见 https://github.com/queckezz/koa-views#api
   },
 }
 ```
-然后，在 app 启动之前
-```js
-const Heysoo = require('heysoo');
+这里的参数基于 `koa-views` 的文档说明，详见：https://github.com/queckezz/koa-views#api
 
-const app = new Heysoo();
+> 注意，修改其他模板引擎后需要先安装该模板引擎依赖包。
 
-app.beforeStart(app => {
-  const nunjucks = require('nunjucks');
-  app.view.setEngine(nunjucks.configure({
-    autoescape: true,
-    noCache: true
-  }));
-});
-  
-app.start();
-```
 
 ## 模板变量
 框架默认会向模板传入 `ctx` 实例变量。

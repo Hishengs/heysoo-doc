@@ -19,11 +19,11 @@ module.exports = app => {
 
   }
   return HomeController;
-}
+};
 ```
 
 ## 支持方法
-`GET, POST, PUT, DELETE, PATCH`
+`'GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'COPY', 'LINK', 'UNLINK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND'`
 
 ## 使用方式
 
@@ -35,9 +35,10 @@ app.router.get('/', function (){
   this.ctx.body = 'hello, world';
 });
 ```
+> 注意，如果回调函数包含异步操作，必须将回调函数声明为异步（async）。
 
 ### 控制器方法映射
-> 通过字符串方式指定匹配的控制器方法：app.router.METHOD(path, controllerActionString);
+> app.router.METHOD(path, controllerActionString); 通过字符串方式指定匹配的控制器方法。
 
 ```js
 app.router.get('/', 'home.index');
@@ -45,13 +46,24 @@ app.router.get('/', 'home.index');
 
 ### 正则
 ```js
-app.router.get(/ab?cd/, async function(){
+app.router.get(/ab?cd/, function(){
   this.ctx.body = 'ab?cd';
 });
 ```
+
 ### 重定向
+> router.redirect(source, dist);
+
+> source 和 dist 都可以是路由路径或路由名
+
 ```js
 app.router.redirect('/a', '/b');
+app.router.redirect('/a', '/b', 301); // 指定状态码
+```
+
+### 给路由指定名称
+```js
+app.router.get('router', '/router-name', 'router.routeName');
 ```
 
 ### 输出页面
@@ -73,7 +85,7 @@ app.router.group(options, router => {
   router.get('/name', 'user.getName');
 });
 ```
-通过 `options` 可以对分组进行更加详细的设置
+通过 `options` 可以对分组进行更加详细的设置，主要有以下几类：
 ### 控制器分组
 ```js
 app.router.group({
@@ -100,10 +112,14 @@ app.router.group({
 });
 ```
 
-## 具名路由
+### 混合分组
 ```js
-app.router.get('/', 'home.index', {
-  name: 'home'
+app.router.group({
+  controller: 'user',
+  prefix: '/user',
+}, (router) => {
+  router.get('/group-mixin-a', 'groupMixinA');
+  router.get('/group-mixin-b', 'groupMixinB');
 });
 ```
 
@@ -119,11 +135,11 @@ app.router.get('/user/:id', function(){
 ## API
 在 `controller`, `service` 方法中可以通过 `this.ctx.app.router[methodName]` 的方式引用相关的 API 方法。
 
-### getUrl
+### getRouteUrl
 
 **简介** 通过路由名称获取路径
 
-**定义** `getUrl(routeName, params)`
+**定义** `getRouteUrl(routeName, params)`
 
 **参数** 
 
