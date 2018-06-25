@@ -8,10 +8,6 @@
 框架本身默认使用 `nunjucks` 作为模板引擎。
 
 ## 配置
-首先安装 `koa-views` 和 `nunjucks`：
-```js
-npm i --save koa-views nunjucks
-```
 在 `config.js` 中：
 ```js
 module.exports = {

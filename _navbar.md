@@ -5,7 +5,7 @@
 - [路由](/router.md)
 - [数据库](/database.md)
 - [静态文件](/static.md)
-<!-- - [定时任务](/schedule.md) -->
+- [计划任务](/schedule.md)
 <!-- - [日志](/logger.md) -->
 - [API](/api.md)
 - [深入](/futher.md)
