@@ -37,8 +37,12 @@ app.router.get('/', function (){
 ```
 > 注意，如果回调函数包含异步操作，必须将回调函数声明为异步（async）。
 
+> 请不要使用箭头函数（丢失上下文）。
+
 ### 控制器方法映射
-> app.router.METHOD(path, controllerActionString); 通过字符串方式指定匹配的控制器方法。
+> app.router.METHOD(path, controllerActionString)
+
+> 通过字符串方式指定匹配的控制器方法。
 
 ```js
 app.router.get('/', 'home.index');
@@ -52,9 +56,9 @@ app.router.get(/ab?cd/, function(){
 ```
 
 ### 重定向
-> router.redirect(source, dist);
+> router.redirect(from, to);
 
-> source 和 dist 都可以是路由路径或路由名
+> from 和 to 都可以是路由路径或路由名
 
 ```js
 app.router.redirect('/a', '/b');
@@ -63,20 +67,24 @@ app.router.redirect('/a', '/b', 301); // 指定状态码
 
 ### 给路由指定名称
 ```js
-app.router.get('router', '/router-name', 'router.routeName');
+app.router.get('homepage', '/user', 'user.index');
 ```
 
 ### 输出页面
 ```js
 app.router.view('/index', 'index.html');
+// 等同于
+app.router.all('/index', function () {
+  this.ctx.display('index.html');
+});
 ```
 
 ### 链式调用
 ```js
 app.router
-.get('/', 'home.index')
-.get('/greet', 'home.greet')
-.post('/info', 'home.postInfo');
+  .get('/', 'home.index')
+  .get('/user', 'user.index')
+  .post('/info', 'user.info');
 ```
 
 ## 路由分组
@@ -124,12 +132,21 @@ app.router.group({
 ```
 
 ## 路由参数
+### 命名参数
 ```js
 app.router.get('/user/:id', function(){
   this.ctx.body = 'user ' + this.ctx.params.id;
 });
 ```
-> 在控制器方法中也可以通过 `this.ctx.params` 获取参数。
+> 在控制器方法中可以通过 `this.ctx.params` 获取参数。
+
+### 查询参数
+```js
+app.router.get('/user', function(){
+  this.ctx.body = 'user: ' + (this.ctx.query.name || 'none');
+});
+```
+> 在控制器方法中可以通过 `this.ctx.query` 获取参数。
 
 
 ## API
